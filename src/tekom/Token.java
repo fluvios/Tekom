@@ -10,7 +10,7 @@ package tekom;
  * @author RTP
  */
 public class Token {
-    private String item,lexicType;
+    private String item,lexicType,states;
     private int lexicToken;
 
     public Token() {
@@ -22,6 +22,10 @@ public class Token {
         this.lexicToken = lexicToken;
     }
 
+    public String getStates() {
+        return states;
+    }
+    
     public String getItem() {
         return item;
     }
@@ -40,6 +44,10 @@ public class Token {
 
     public void setLexicToken(int lexicToken) {
         this.lexicToken = lexicToken;
+    }
+
+    public void setStates(String states) {
+        this.states = states;
     }
 
     public void setLexicType(String lexicType) {
