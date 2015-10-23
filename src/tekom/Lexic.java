@@ -18,61 +18,107 @@ public class Lexic {
     private ArrayList<Token> lexic = new ArrayList<>();
     private boolean status;
     private int i;
-    private String token="";
-    
+    private String token = "";
+
     public void Read() {
         System.out.println("Masukan ekspresi: ");
         expression = sc.nextLine() + " ";
     }
-    
+
     public void Analyze(int j) {
         //for (int i = 0; i < expression.length(); i++) {
-            token = "";
-            if (isInteger(expression.charAt(j))) {
-                token+=expression.charAt(j);
+        token = "";
+        if (isInteger(expression.charAt(j))) {
+            token += expression.charAt(j);
+            j++;
+            while (isInteger(expression.charAt(j))) {
+                token += expression.charAt(j);
                 j++;
-                while (isInteger(expression.charAt(j))) {                    
-                    token+=expression.charAt(j);
+            }
+            if (!isInteger(expression.charAt(j))) {
+                if (expression.charAt(j) == '.') {
+                    token += expression.charAt(j);
                     j++;
-                }
-                if (!isInteger(expression.charAt(j))){
-                    lexic.add(new Token(token,"Integer",3));
-                    if (j != (expression.length()-1)){
-                        Analyze(j);
-                        j=expression.length()-1;
+                    while (isInteger(expression.charAt(j))) {
+                        token += expression.charAt(j);
+                        j++;
                     }
-                }        
-            }
-            
-            if (isVariable(expression.charAt(j))){
-                token+=expression.charAt(j);
-                j++;
-                while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j))) {                    
-                    token+=expression.charAt(j);
+                    if (!isInteger(expression.charAt(j))) {
+                        lexic.add(new Token(token, "Real", 4));
+                        if (j != (expression.length() - 1)) {
+                            Analyze(j);
+                            j = expression.length() - 1;
+                        }
+                    }
+                } else if (expression.charAt(j) == 'e' || expression.charAt(j) == 'E') {
+                    token += expression.charAt(j);
                     j++;
-                }
-                if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))){
-                    lexic.add(new Token(token,"Variable",1));
-                    if (j < (expression.length()-1)){
+                    while (isInteger(expression.charAt(j))) {
+                        token += expression.charAt(j);
+                        j++;
+                    }
+                    if (!isInteger(expression.charAt(j))) {
+                        if (expression.charAt(j) == '+' || expression.charAt(j) == '-') {
+                            token += expression.charAt(j);
+                            j++;
+                            while (isInteger(expression.charAt(j))) {
+                                token += expression.charAt(j);
+                                j++;
+                            }
+                            if (!isInteger(expression.charAt(j))) {
+                                lexic.add(new Token(token, "Real", 4));
+                                if (j != (expression.length() - 1)) {
+                                    Analyze(j);
+                                    j = expression.length() - 1;
+                                }
+                            }
+                        } else {
+                            lexic.add(new Token(token, "Real", 4));
+                            if (j != (expression.length() - 1)) {
+                                Analyze(j);
+                                j = expression.length() - 1;
+                            }
+                        }
+                    }
+                } else {
+                    lexic.add(new Token(token, "Integer", 3));
+                    if (j != (expression.length() - 1)) {
                         Analyze(j);
-                        j=expression.length()-1;
-                    } 
+                        j = expression.length() - 1;
+                    }
                 }
-            } 
-            if (isOperator(expression.charAt(j))){
-                token+=expression.charAt(j);
-                lexic.add(new Token(token,"Operator",6));
-                j++;
-                if (j != (expression.length()-1)){
-                    Analyze(j);
-                    j=expression.length()-1;
-                } 
             }
+        }
+
+        if (isVariable(expression.charAt(j))) {
+            token += expression.charAt(j);
+            j++;
+            while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j)) || expression.charAt(j) == '_') {
+                token += expression.charAt(j);
+                j++;
+            }
+            if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))) {
+                lexic.add(new Token(token, "Variable", 1));
+                if (j < (expression.length() - 1)) {
+                    Analyze(j);
+                    j = expression.length() - 1;
+                }
+            }
+        }
+        if (isOperator(expression.charAt(j))) {
+            token += expression.charAt(j);
+            lexic.add(new Token(token, "Operator", 6));
+            j++;
+            if (j != (expression.length() - 1)) {
+                Analyze(j);
+                j = expression.length() - 1;
+            }
+        }
     }
 
     public void Print() {
         for (Token x : lexic) {
-            System.out.println(x.getItem()+", Lexic Type: "+x.getLexicType()+", Lexic Value: "+x.getLexicToken());
+            System.out.println(x.getItem() + ", Lexic Type: " + x.getLexicType() + ", Lexic Value: " + x.getLexicToken());
         }
     }
 
@@ -90,10 +136,10 @@ public class Lexic {
     public boolean isVariable(char Token) {
         return Character.isAlphabetic(Token);
     }
-    
+
     public boolean isOperator(char Token) {
         status = false;
-        if (('+' == Token) || ('-' == Token) || ('*' == Token) || ('/' == Token)){
+        if (('+' == Token) || ('-' == Token) || ('*' == Token) || ('/' == Token)) {
             status = true;
             return status;
         } else {
