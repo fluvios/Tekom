@@ -18,7 +18,7 @@ public class Tekom {
         // TODO code application logic here
         Lexic l = new Lexic();
         l.Read();
-        l.Analyze();
+        l.Analyze(0);
         l.Print();
     }
     

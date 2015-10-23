@@ -22,19 +22,52 @@ public class Lexic {
     
     public void Read() {
         System.out.println("Masukan ekspresi: ");
-        expression = sc.nextLine();
+        expression = sc.nextLine() + " ";
     }
-
-    public void Analyze() {
-        for (int i = 0; i < expression.length(); i++) {
-            if (isInteger(expression.charAt(i))) {
-                while (isInteger(expression.charAt(i))) {                    
-                    token+=expression.charAt(i);
-                    i++;
+    
+    public void Analyze(int j) {
+        //for (int i = 0; i < expression.length(); i++) {
+            token = "";
+            if (isInteger(expression.charAt(j))) {
+                token+=expression.charAt(j);
+                j++;
+                while (isInteger(expression.charAt(j))) {                    
+                    token+=expression.charAt(j);
+                    j++;
                 }
+                if (!isInteger(expression.charAt(j))){
+                    lexic.add(new Token(token,"Integer",3));
+                    if (j != (expression.length()-1)){
+                        Analyze(j);
+                        j=expression.length()-1;
+                    }
+                }        
             }
-            lexic.add(new Token(token,"Integer",3));
-        }
+            
+            if (isVariable(expression.charAt(j))){
+                token+=expression.charAt(j);
+                j++;
+                while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j))) {                    
+                    token+=expression.charAt(j);
+                    j++;
+                }
+                if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))){
+                    lexic.add(new Token(token,"Variable",1));
+                    if (j < (expression.length()-1)){
+                        Analyze(j);
+                        j=expression.length()-1;
+                    } 
+                }
+            } 
+            if (isOperator(expression.charAt(j))){
+                token+=expression.charAt(j);
+                lexic.add(new Token(token,"Operator",6));
+                j++;
+                if (j != (expression.length()-1)){
+                    Analyze(j);
+                    j=expression.length()-1;
+                } 
+            }
     }
 
     public void Print() {
@@ -54,9 +87,17 @@ public class Lexic {
         }
     }
 
-    public boolean istigfar(char Token1) {
-        Character.isAlphabetic(Token1);
-        status = true;
-        return status;
+    public boolean isVariable(char Token) {
+        return Character.isAlphabetic(Token);
+    }
+    
+    public boolean isOperator(char Token) {
+        status = false;
+        if (('+' == Token) || ('-' == Token) || ('*' == Token) || ('/' == Token)){
+            status = true;
+            return status;
+        } else {
+            return status;
+        }
     }
 }
