@@ -35,7 +35,7 @@ public class Lexic {
                 j++;
             }
             if (!isInteger(expression.charAt(j))) {
-                if (expression.charAt(j) == '.') {
+                if (expression.charAt(j) == '.' || expression.charAt(j)==',') {
                     token += expression.charAt(j);
                     j++;
                     while (isInteger(expression.charAt(j))) {
@@ -43,7 +43,7 @@ public class Lexic {
                         j++;
                     }
                     if (!isInteger(expression.charAt(j))) {
-                        lexic.add(new Token(token, "Real", 4));
+                        lexic.add(new Token(token, "Real", 2));
                         if (j != (expression.length() - 1)) {
                             Analyze(j);
                             j = expression.length() - 1;
@@ -65,14 +65,14 @@ public class Lexic {
                                 j++;
                             }
                             if (!isInteger(expression.charAt(j))) {
-                                lexic.add(new Token(token, "Real", 4));
+                                lexic.add(new Token(token, "Real", 2));
                                 if (j != (expression.length() - 1)) {
                                     Analyze(j);
                                     j = expression.length() - 1;
                                 }
                             }
                         } else {
-                            lexic.add(new Token(token, "Real", 4));
+                            lexic.add(new Token(token, "Real", 2));
                             if (j != (expression.length() - 1)) {
                                 Analyze(j);
                                 j = expression.length() - 1;
@@ -102,16 +102,6 @@ public class Lexic {
                     Analyze(j);
                     j = expression.length() - 1;
                 }
-            }
-        }
-
-        if (isOperator(expression.charAt(j))) {
-            token += expression.charAt(j);
-            lexic.add(new Token(token, "Operator", 6));
-            j++;
-            if (j != (expression.length() - 1)) {
-                Analyze(j);
-                j = expression.length() - 1;
             }
         }
 
