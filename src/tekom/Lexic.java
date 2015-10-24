@@ -26,7 +26,6 @@ public class Lexic {
     }
 
     public void Analyze(int j) {
-        //for (int i = 0; i < expression.length(); i++) {
         token = "";
         if (isInteger(expression.charAt(j))) {
             token += expression.charAt(j);
@@ -58,7 +57,7 @@ public class Lexic {
                         j++;
                     }
                     if (!isInteger(expression.charAt(j))) {
-                        if (expression.charAt(j) == '+' || expression.charAt(j) == '-') {
+                        if (isFloat(expression.charAt(j))) {
                             token += expression.charAt(j);
                             j++;
                             while (isInteger(expression.charAt(j))) {
@@ -105,7 +104,7 @@ public class Lexic {
                 }
             }
         }
-        
+
         if (isOperator(expression.charAt(j))) {
             token += expression.charAt(j);
             lexic.add(new Token(token, "Operator", 6));
@@ -115,7 +114,7 @@ public class Lexic {
                 j = expression.length() - 1;
             }
         }
-        
+
         if (isGSymbol(expression.charAt(j))) {
             token += expression.charAt(j);
             lexic.add(new Token(token, "Grouping Symbol", 4));
@@ -126,7 +125,7 @@ public class Lexic {
                 j = expression.length() - 1;
             }
         }
-        
+
         if (isEGSymbol(expression.charAt(j))) {
             token += expression.charAt(j);
             lexic.add(new Token(token, "Grouping Symbol", 5));
@@ -193,6 +192,16 @@ public class Lexic {
     public boolean isEGSymbol(char Token) {
         status = false;
         if (')' == Token) {
+            status = true;
+            return status;
+        } else {
+            return status;
+        }
+    }
+
+    public boolean isFloat(char Token) {
+        status = false;
+        if ('+' == Token||'-' == Token) {
             status = true;
             return status;
         } else {
