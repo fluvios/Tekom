@@ -17,62 +17,111 @@ public class Lexic {
     private Scanner sc = new Scanner(System.in);
     private ArrayList<Token> lexic = new ArrayList<>();
     private boolean status;
-    private int i;
-    private String token="";
-    
+    private int i, countG, countEG;
+    private String token = "";
+
     public void Read() {
         System.out.println("Masukan ekspresi: ");
         expression = sc.nextLine() + " ";
     }
-    
+
     public void Analyze(int j) {
         //for (int i = 0; i < expression.length(); i++) {
-            token = "";
-            if (isInteger(expression.charAt(j))) {
-                token+=expression.charAt(j);
+        token = "";
+        if (isInteger(expression.charAt(j))) {
+            token += expression.charAt(j);
+            j++;
+            while (isInteger(expression.charAt(j))) {
+                token += expression.charAt(j);
                 j++;
-                while (isInteger(expression.charAt(j))) {                    
-                    token+=expression.charAt(j);
-                    j++;
-                }
-                if (!isInteger(expression.charAt(j))){
-                    lexic.add(new Token(token,"Integer",3));
-                    if (j != (expression.length()-1)){
-                        Analyze(j);
-                        j=expression.length()-1;
-                    }
-                }        
             }
-            
-            if (isVariable(expression.charAt(j))){
-                token+=expression.charAt(j);
-                j++;
-                while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j))) {                    
-                    token+=expression.charAt(j);
-                    j++;
-                }
-                if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))){
-                    lexic.add(new Token(token,"Variable",1));
-                    if (j < (expression.length()-1)){
-                        Analyze(j);
-                        j=expression.length()-1;
-                    } 
-                }
-            } 
-            if (isOperator(expression.charAt(j))){
-                token+=expression.charAt(j);
-                lexic.add(new Token(token,"Operator",6));
-                j++;
-                if (j != (expression.length()-1)){
+            if (!isInteger(expression.charAt(j))) {
+                lexic.add(new Token(token, "Integer", 3));
+                if (j != (expression.length() - 1)) {
                     Analyze(j);
-                    j=expression.length()-1;
-                } 
+                    j = expression.length() - 1;
+                }
             }
+        }
+
+        if (isVariable(expression.charAt(j))) {
+            token += expression.charAt(j);
+            j++;
+            while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j)) || expression.charAt(j) == '_') {
+                token += expression.charAt(j);
+                j++;
+            }
+            if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))) {
+                lexic.add(new Token(token, "Variable", 1));
+                if (j < (expression.length() - 1)) {
+                    Analyze(j);
+                    j = expression.length() - 1;
+                }
+            }
+        }
+        if (isOperator(expression.charAt(j))) {
+            token += expression.charAt(j);
+            lexic.add(new Token(token, "Operator", 6));
+            j++;
+            if (j != (expression.length() - 1)) {
+                Analyze(j);
+                j = expression.length() - 1;
+            }
+        }
+        if (isGSymbol(expression.charAt(j))) {
+            token += expression.charAt(j);
+            lexic.add(new Token(token, "Grouping Symbol", 4));
+            countG++;
+            j++;
+            if (j != (expression.length() - 1)) {
+                Analyze(j);
+                j = expression.length()-1;
+            }  
+        }  
+        if (isEGSymbol(expression.charAt(j))) {
+            token += expression.charAt(j);
+            lexic.add(new Token(token, "Grouping Symbol", 5));
+            countEG++;
+            j++;
+            if (j != (expression.length() - 1)) {
+                Analyze(j);
+                j = expression.length()-1;
+            }  
+        }  
+       
+//                while (expression.charAt(temp) != ')') {
+//                    temp++;
+//                }
+//                if (expression.charAt(temp) == ')') {
+//                    int temp2=temp;
+//                    token = "";
+//                    token += expression.charAt(temp);
+//                    lexic.add(new Token(token, "Grouping Symbol", 5));
+//                    temp++;
+//                    if (temp != (expression.length() - 1) && expression.charAt(temp) != ')') {
+//                        Analyze(temp);
+//                        temp = expression.length() - 1;
+//                    }
+//                    while (temp2 < expression.length()-1){
+//                        temp2++;
+//                        if (expression.charAt(temp2) == ')'){
+//                            temp=temp2;
+//                        }
+//                    }
+//                    token = "";
+//                    token += expression.charAt(temp);
+//                    lexic.add(new Token(token, "Grouping Symbol", 5));
+//                    temp++;
+//                    if (temp != (expression.length() - 1)) {
+//                        Analyze(temp);
+//                        temp = expression.length() - 1;
+//                    }
+       
     }
 
     public void Print() {
         for (Token x : lexic) {
-            System.out.println(x.getItem()+", Lexic Type: "+x.getLexicType()+", Lexic Value: "+x.getLexicToken());
+            System.out.println(x.getItem() + ", Lexic Type: " + x.getLexicType() + ", Lexic Value: " + x.getLexicToken());
         }
     }
 
@@ -90,10 +139,30 @@ public class Lexic {
     public boolean isVariable(char Token) {
         return Character.isAlphabetic(Token);
     }
-    
+
     public boolean isOperator(char Token) {
         status = false;
-        if (('+' == Token) || ('-' == Token) || ('*' == Token) || ('/' == Token)){
+        if (('+' == Token) || ('-' == Token) || ('*' == Token) || ('/' == Token)) {
+            status = true;
+            return status;
+        } else {
+            return status;
+        }
+    }
+
+    public boolean isGSymbol(char Token) {
+        status = false;
+        if ('(' == Token) {
+            status = true;
+            return status;
+        } else {
+            return status;
+        }
+    }
+    
+    public boolean isEGSymbol(char Token) {
+        status = false;
+        if (')' == Token) {
             status = true;
             return status;
         } else {
