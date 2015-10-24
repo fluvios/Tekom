@@ -15,14 +15,14 @@ public class Lexic {
 
     private String expression;
     private Scanner sc = new Scanner(System.in);
-    private ArrayList<Token> lexic = new ArrayList<>();
+    public ArrayList<Token> lexic = new ArrayList<>();
     private boolean status;
     private int i, countG, countEG;
     private String token = "";
 
-    public void Read() {
-        System.out.println("Masukan ekspresi: ");
-        expression = sc.nextLine() + " ";
+    public void Read(String words) {
+//        System.out.println("Masukan ekspresi: ");
+        expression = words + " ";
     }
 
     public void Analyze(int j) {
