@@ -36,10 +36,56 @@ public class Lexic {
                 j++;
             }
             if (!isInteger(expression.charAt(j))) {
-                lexic.add(new Token(token, "Integer", 3));
-                if (j != (expression.length() - 1)) {
-                    Analyze(j);
-                    j = expression.length() - 1;
+                if (expression.charAt(j) == '.') {
+                    token += expression.charAt(j);
+                    j++;
+                    while (isInteger(expression.charAt(j))) {
+                        token += expression.charAt(j);
+                        j++;
+                    }
+                    if (!isInteger(expression.charAt(j))) {
+                        lexic.add(new Token(token, "Real", 4));
+                        if (j != (expression.length() - 1)) {
+                            Analyze(j);
+                            j = expression.length() - 1;
+                        }
+                    }
+                } else if (expression.charAt(j) == 'e' || expression.charAt(j) == 'E') {
+                    token += expression.charAt(j);
+                    j++;
+                    while (isInteger(expression.charAt(j))) {
+                        token += expression.charAt(j);
+                        j++;
+                    }
+                    if (!isInteger(expression.charAt(j))) {
+                        if (expression.charAt(j) == '+' || expression.charAt(j) == '-') {
+                            token += expression.charAt(j);
+                            j++;
+                            while (isInteger(expression.charAt(j))) {
+                                token += expression.charAt(j);
+                                j++;
+                            }
+                            if (!isInteger(expression.charAt(j))) {
+                                lexic.add(new Token(token, "Real", 4));
+                                if (j != (expression.length() - 1)) {
+                                    Analyze(j);
+                                    j = expression.length() - 1;
+                                }
+                            }
+                        } else {
+                            lexic.add(new Token(token, "Real", 4));
+                            if (j != (expression.length() - 1)) {
+                                Analyze(j);
+                                j = expression.length() - 1;
+                            }
+                        }
+                    }
+                } else {
+                    lexic.add(new Token(token, "Integer", 3));
+                    if (j != (expression.length() - 1)) {
+                        Analyze(j);
+                        j = expression.length() - 1;
+                    }
                 }
             }
         }
@@ -59,6 +105,7 @@ public class Lexic {
                 }
             }
         }
+        
         if (isOperator(expression.charAt(j))) {
             token += expression.charAt(j);
             lexic.add(new Token(token, "Operator", 6));
@@ -68,6 +115,7 @@ public class Lexic {
                 j = expression.length() - 1;
             }
         }
+        
         if (isGSymbol(expression.charAt(j))) {
             token += expression.charAt(j);
             lexic.add(new Token(token, "Grouping Symbol", 4));
@@ -75,9 +123,10 @@ public class Lexic {
             j++;
             if (j != (expression.length() - 1)) {
                 Analyze(j);
-                j = expression.length()-1;
-            }  
-        }  
+                j = expression.length() - 1;
+            }
+        }
+        
         if (isEGSymbol(expression.charAt(j))) {
             token += expression.charAt(j);
             lexic.add(new Token(token, "Grouping Symbol", 5));
@@ -85,38 +134,19 @@ public class Lexic {
             j++;
             if (j != (expression.length() - 1)) {
                 Analyze(j);
-                j = expression.length()-1;
-            }  
-        }  
-       
-//                while (expression.charAt(temp) != ')') {
-//                    temp++;
-//                }
-//                if (expression.charAt(temp) == ')') {
-//                    int temp2=temp;
-//                    token = "";
-//                    token += expression.charAt(temp);
-//                    lexic.add(new Token(token, "Grouping Symbol", 5));
-//                    temp++;
-//                    if (temp != (expression.length() - 1) && expression.charAt(temp) != ')') {
-//                        Analyze(temp);
-//                        temp = expression.length() - 1;
-//                    }
-//                    while (temp2 < expression.length()-1){
-//                        temp2++;
-//                        if (expression.charAt(temp2) == ')'){
-//                            temp=temp2;
-//                        }
-//                    }
-//                    token = "";
-//                    token += expression.charAt(temp);
-//                    lexic.add(new Token(token, "Grouping Symbol", 5));
-//                    temp++;
-//                    if (temp != (expression.length() - 1)) {
-//                        Analyze(temp);
-//                        temp = expression.length() - 1;
-//                    }
-       
+                j = expression.length() - 1;
+            }
+        }
+
+        if (isOperator(expression.charAt(j))) {
+            token += expression.charAt(j);
+            lexic.add(new Token(token, "Operator", 6));
+            j++;
+            if (j != (expression.length() - 1)) {
+                Analyze(j);
+                j = expression.length() - 1;
+            }
+        }
     }
 
     public void Print() {
@@ -159,7 +189,7 @@ public class Lexic {
             return status;
         }
     }
-    
+
     public boolean isEGSymbol(char Token) {
         status = false;
         if (')' == Token) {
