@@ -16,11 +16,15 @@ public class Tekom {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-//        Lexic l = new Lexic();
-//        l.Read();
-//        l.Analyze(0);
-//        l.Print();
-        new View().setVisible(true);
+        boolean b;
+        Lexic l = new Lexic();
+        PushDownAutomata p = new PushDownAutomata();
+        l.Read();
+        l.Analyze(0);
+        l.Generate();
+        p.Validator(0,l);
+        l.Print();
+//        new View().setVisible(true);
     }
     
 }

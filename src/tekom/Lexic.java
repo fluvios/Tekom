@@ -16,6 +16,7 @@ public class Lexic {
     private String expression;
     private Scanner sc = new Scanner(System.in);
     public ArrayList<Token> lexic = new ArrayList<>();
+    public ArrayList<Integer> tokenPoints = new ArrayList<>();
     private boolean status;
     private int i, countG, countEG;
     private String token = "";
@@ -29,6 +30,11 @@ public class Lexic {
         expression = words + " ";
     }
 
+    public void Read() {
+        System.out.println("Masukan ekspresi: ");
+        expression = sc.nextLine() + " ";
+    }
+
     /**
      * Method untuk menganalisa leksik setiap karakter pada indeks string dari
      * ekspersi I : variabel string O : string yang memenuhi kondisi suatu
@@ -40,10 +46,10 @@ public class Lexic {
         /**
          * Pembacaan bilangan integer
          */
-        if (isInteger(expression.charAt(j))) {
-            token += expression.charAt(j);
+        if (isInteger(expression.charAt(j))) { // Jika bilangan pada indeks string tersebut adalah integer
+            token += expression.charAt(j); // assignment nilai token dengan karakter pada indeks tersebut
             j++;
-            while (isInteger(expression.charAt(j))) {
+            while (isInteger(expression.charAt(j))) { // selama karakter pada indeks selanjutnya adalah integer
                 token += expression.charAt(j);
                 j++;
             }
@@ -52,7 +58,23 @@ public class Lexic {
              * Pembacaan bilangan real
              */
             if (!isInteger(expression.charAt(j))) {
-                if ((expression.charAt(j) == '.' || expression.charAt(j) == ',') && (isInteger(expression.charAt(j + 1)))) {
+//                if ((isVariable(expression.charAt(j)))&&(expression.charAt(j)!='e'||expression.charAt(j)!='E')) {
+//                    token += expression.charAt(j);
+//                    j++;
+//                    while (isVariable(expression.charAt(j))) {
+//                        token += expression.charAt(j);
+//                        j++;
+//                    }
+//                    if (!isVariable(expression.charAt(j))) {
+//                        {
+//                            if (j != (expression.length() - 1)) {
+//                                Analyze(j);
+//                                j = expression.length() - 1;
+//                            }
+//                        }
+//                    }
+//                } else 
+                if ((expression.charAt(j) == '.' || expression.charAt(j) == ',') && (isInteger(expression.charAt(j + 1)))) { // Jika bilangan pada indeks string tersebut ada . atau , dan didepannya ada bilangan integer
                     token += expression.charAt(j);
                     j++;
                     while (isInteger(expression.charAt(j))) {
@@ -60,7 +82,7 @@ public class Lexic {
                         j++;
                     }
                     if (!isInteger(expression.charAt(j))) {
-                        if (expression.charAt(j) == 'e' || expression.charAt(j) == 'E') {
+                        if (expression.charAt(j) == 'e' || expression.charAt(j) == 'E') { // jika pada indeks string terdapat keyword eksponen
                             token += expression.charAt(j);
                             j++;
                             while (isInteger(expression.charAt(j))) {
@@ -68,7 +90,7 @@ public class Lexic {
                                 j++;
                             }
                             if (!isInteger(expression.charAt(j))) {
-                                if (isFloat(expression.charAt(j))) {
+                                if (isFloat(expression.charAt(j))) { // jika setelah eksponen bertemu operator + atau -
                                     token += expression.charAt(j);
                                     j++;
                                     while (isInteger(expression.charAt(j))) {
@@ -76,10 +98,10 @@ public class Lexic {
                                         j++;
                                     }
                                     if (!isInteger(expression.charAt(j))) {
-                                        lexic.add(new Token(token, "Real", 2));
-                                        if (j != (expression.length() - 1)) {
-                                            Analyze(j);
-                                            j = expression.length() - 1;
+                                        lexic.add(new Token(token, "Real", 2)); // masukan hasil lexic kedalam kelas lexic
+                                        if (j != (expression.length() - 1)) { // jika nilai indeksnya kurang dari panjang elemen string
+                                            Analyze(j); // masuk kedalam fungsi analyze
+                                            j = expression.length() - 1; // kurangi nilai indeks
                                         }
                                     }
                                 } else {
@@ -131,13 +153,13 @@ public class Lexic {
                             }
                         }
                     }
-                } else if ((expression.charAt(j) == '.' || expression.charAt(j) == ',') && (!isInteger(expression.charAt(j + 1)))) {
+                } else if ((expression.charAt(j) == '.' || expression.charAt(j) == ',') && (!isInteger(expression.charAt(j + 1)))) { // jika setelah , atau . tidak ada nilainya
                     j++;
                     if (j != (expression.length() - 1)) {
                         Analyze(j);
                         j = expression.length() - 1;
                     }
-                } else if ((expression.charAt(j) == 'e' || expression.charAt(j) == 'E') && (expression.charAt(j + 1) == ' ')) {
+                } else if ((expression.charAt(j) == 'e' || expression.charAt(j) == 'E') && (expression.charAt(j + 1) == ' ')) { // jika setelah eksponen tidak ada nilainya
                     j++;
                     if (j != (expression.length() - 1)) {
                         Analyze(j);
@@ -156,14 +178,14 @@ public class Lexic {
         /**
          * pembacaan variabel
          */
-        if (isVariable(expression.charAt(j))) {
+        if (isVariable(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah alfabet
             token += expression.charAt(j);
             j++;
-            while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j)) || expression.charAt(j) == '_') {
+            while (isVariable(expression.charAt(j)) || isInteger(expression.charAt(j)) || expression.charAt(j) == '_') { // selama nilainya itu alfabet, tanda garis bawah atau integer
                 token += expression.charAt(j);
                 j++;
             }
-            if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))) {
+            if (!isVariable(expression.charAt(j)) || !isInteger(expression.charAt(j))) { // jika bukan variabel atau integer
                 lexic.add(new Token(token, "Variable", 1));
                 if (j < (expression.length() - 1)) {
                     Analyze(j);
@@ -175,7 +197,7 @@ public class Lexic {
         /**
          * pembacaan simbol buka kurung
          */
-        if (isGSymbol(expression.charAt(j))) {
+        if (isGSymbol(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah buka kurung
             token += expression.charAt(j);
             lexic.add(new Token(token, "Grouping Symbol", 4));
             countG++;
@@ -189,7 +211,7 @@ public class Lexic {
         /**
          * pembacaan simbol tutup kurung
          */
-        if (isEGSymbol(expression.charAt(j))) {
+        if (isEGSymbol(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah tutup kurung
             token += expression.charAt(j);
             lexic.add(new Token(token, "Grouping Symbol", 5));
             countEG++;
@@ -203,7 +225,7 @@ public class Lexic {
         /**
          * pembacaan operator tambah
          */
-        if (isPlus(expression.charAt(j))) {
+        if (isPlus(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah operator tambah
             token += expression.charAt(j);
             lexic.add(new Token(token, "Operator", 6));
             j++;
@@ -216,7 +238,7 @@ public class Lexic {
         /**
          * pembacaan operator kurang
          */
-        if (isMinus(expression.charAt(j))) {
+        if (isMinus(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah operator kurang
             token += expression.charAt(j);
             lexic.add(new Token(token, "Operator", 7));
             j++;
@@ -229,7 +251,7 @@ public class Lexic {
         /**
          * pembacaan operator kali
          */
-        if (isMultiple(expression.charAt(j))) {
+        if (isMultiple(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah operator kali
             token += expression.charAt(j);
             lexic.add(new Token(token, "Operator", 8));
             j++;
@@ -242,7 +264,7 @@ public class Lexic {
         /**
          * pembacaan operator bagi
          */
-        if (isDivide(expression.charAt(j))) {
+        if (isDivide(expression.charAt(j))) { // jika nilai dari karakter pada indeks string tersebut adalah operator bagi
             token += expression.charAt(j);
             lexic.add(new Token(token, "Operator", 9));
             j++;
@@ -253,14 +275,26 @@ public class Lexic {
         }
     }
 
+    public void Generate() {
+        for (Token x : lexic) {
+            tokenPoints.add(x.getLexicToken());
+        }
+    }
+
     /**
      * Method untuk menampilkan hasil dari method analyze I : - O : string yang
      * memenuhi kondisi suatu leksik,tipe leksiknya dan nilai token leksik
      */
     public void Print() {
-        for (Token x : lexic) {
-            System.out.println(x.getItem() + ", Lexic Type: " + x.getLexicType() + ", Lexic Value: " + x.getLexicToken());
-        }
+//        for (Token x : lexic) {
+//            System.out.println(x.getItem() + ", Lexic Type: " + x.getLexicType() + ", Lexic Value: " + x.getLexicToken());
+//        }
+
+//        for (Integer x : tokenPoints) {
+//            System.out.print(x + ",");
+//        }
+        
+        System.out.println(new PushDownAutomata().toString());
     }
 
     /**
