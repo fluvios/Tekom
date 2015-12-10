@@ -294,7 +294,7 @@ public class Lexic {
 //            System.out.print(x + ",");
 //        }
         
-        System.out.println(new PushDownAutomata().toString());
+//        System.out.println(new PushDownAutomata().toString());
     }
 
     /**

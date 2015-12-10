@@ -18,39 +18,33 @@ public class PushDownAutomata {
 
     public void Validator(int i, Lexic l) {
         // Insialisasi Stack
-        s.push("#");
+        if (i == 0) {
+            s.push("#");
+        }
         if (i < l.tokenPoints.size()) {
             // Cek kalau bilangan pertama bukan operand atau grouping symbol
-            if (l.tokenPoints.get(i) != 1 || l.tokenPoints.get(i) != 2 || l.tokenPoints.get(i) != 3) {
-                i += l.tokenPoints.size();
+            if (l.tokenPoints.get(i) == 6 || l.tokenPoints.get(i) == 7 || l.tokenPoints.get(i) == 8 || l.tokenPoints.get(i) == 9) {
+                s.push(l.tokenPoints.get(i));
+                i += 1;
                 Validator(i, l);
-            }// else {
-//                // Insialisasi Pola CFG
-//                s.push("A");
-//                s.push("O");
-//                s.push("A");
-//                i += 1;
-//                // Lakukan pengecekan indeks ke satu
-//                if (l.tokenPoints.get(i) != 1 || l.tokenPoints.get(i) != 2 || l.tokenPoints.get(i) != 3) {
-//                    s.pop();
-//                    i += 1;
-//                    // Cek indeks selanjutnya 
-//                    while (i < l.tokenPoints.size()) {
-//                        // pengecekan indeks ke dua
-//                        if (l.tokenPoints.get(i) == 6) {
-//                            s.pop();
-//                            i += 1;
-//                            if (l.tokenPoints.get(+1) == 1 || l.tokenPoints.get(+1) == 2 || l.tokenPoints.get(+1) == 3) {
-//                                s.pop();
-//                                if (s.elementAt(i).equals("#")) {
-//                                    s.pop();
-//                                    status = true;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            } else if (l.tokenPoints.get(i) == 1 || l.tokenPoints.get(i) == 2 || l.tokenPoints.get(i) == 3) {
+                s.pop();
+                i += 1;
+                Validator(i, l);
+            } else if (l.tokenPoints.get(i) == 4) {
+                if (StackCondition() == true) {
+                    s.push(l.tokenPoints.get(i));
+                    s.push("#");
+                } else {
+                    s.push(l.tokenPoints.get(i));
+                }
+                i += 1;
+                Validator(i, l);
+            } else if (l.tokenPoints.get(i) == 5) {
+                s.pop();
+                i += 1;
+                Validator(i, l);
+            }
         }
         // Cek kondisi stack
         status = StackCondition();
@@ -66,10 +60,10 @@ public class PushDownAutomata {
 
     @Override
     public String toString() {
-        String stat;
+        String stat = null;
         if (status == true) {
             stat = "Valid";
-        } else {
+        } else if (status == false) {
             stat = "Tidak Valid";
         }
         return stat;
